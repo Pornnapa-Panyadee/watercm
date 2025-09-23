@@ -1,0 +1,76 @@
+"use client"
+
+interface WaterCrossSectionProps {
+    currentLevel: number
+    maxLevel: number
+    normalLevel: number
+    status: string
+    stationId: number
+    rightBank: number
+}
+
+export default function WaterCrossSection({
+    currentLevel,
+    maxLevel,
+    normalLevel,
+    rightBank,
+    status,
+    stationId,
+}: WaterCrossSectionProps) {
+    const getStationImage = () => {
+        const imageMap: { [key: number]: string } = {
+            1: "/images/p67.png", // P.67 - สะพานแม่แฝก
+            2: "/images/p1.png", // P.1 - สะพานนวรัฐ
+            3: "/images/floodboy21.png", // FBP.2 - สะพานเม็งราย
+            4: "/images/floodboy22.png", // FBP.3 - สะพานวัดเกาะกลาง
+        }
+        return imageMap[stationId] || "/images/p67.png" // Default to p67.png
+    }
+
+    const chartWidth = "100%"
+    const chartHeight = "100%"
+
+    const containerHeight = 150 // Fixed height for calculations
+    const waterLevelPercent = Math.min(100, (currentLevel / (rightBank * 1.4)) * 100)
+    const maxLevelPercent = Math.min(100, (maxLevel / (rightBank * 1.4)) * 100)
+
+    return (
+        <div
+            className="relative bg-white rounded-lg border overflow-hidden"
+            style={{ width: chartWidth, height: chartHeight, minHeight: `${containerHeight}px` }}
+        >
+            <img
+                src={getStationImage() || "/placeholder.svg"}
+                alt="Cross-section"
+                className="absolute inset-0 w-full h-full object-cover z-10"
+            />
+
+            <div
+                className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-600 via-blue-400 to-blue-200 opacity-90"
+                style={{
+                    height: `${waterLevelPercent}%`,
+                    clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%)",
+                }}
+            />
+
+            <div
+                className="absolute left-0 right-0 border-t-2 border-red-500 border-dashed"
+                style={{ bottom: `${maxLevelPercent}%` }}
+            />
+
+            {/* <div
+                className="absolute right-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold"
+                style={{ bottom: `${maxLevelPercent}%`, transform: "translateY(50%)" }}
+            >
+                ระดับเตือน {maxLevel.toFixed(1)}
+            </div> */}
+
+            <div
+                className="absolute left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold z-20"
+                style={{ bottom: `${waterLevelPercent}%`, transform: "translate(-50%, 50%)" }}
+            >
+                ระดับน้ำ {currentLevel.toFixed(2)}
+            </div>
+        </div>
+    )
+}
