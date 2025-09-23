@@ -33,7 +33,7 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
       case "low":
         return "#eab308" // yellow
       case "normal":
-        return "#2563eb" // blue
+        return "#2cb01dff" // green
       default:
         return "#6b7280" // gray
     }
@@ -86,27 +86,55 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
         const customIcon = L.divIcon({
           className: "custom-marker",
           html: `
-            <div style="
-              background-color: ${getStatusColor(station.status)};
-              width: 30px;
-              height: 30px;
-              border-radius: 50%;
-              border: 3px solid white;
-              box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              color: white;
-              font-weight: bold;
-              font-size: 14px;
-              cursor: pointer;
-            ">
-              ${station.id}
+                <div style=" position: relative;width: 0;height: 0; ">
+                <!-- ขอบขาว -->
+                <div style="
+                    position: absolute;
+                    top: -4px;  /* ระยะห่างจากด้านบน */
+                    left: -4px; /* ระยะห่างจากด้านซ้าย */
+                    width: 0;
+                    height: 0;
+                    border-left: 19px solid transparent;
+                    border-right: 19px solid transparent;
+                    border-bottom: 36px solid white; /* ✅ สามเหลี่ยมขาว (เป็นขอบ) */
+                    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+                "></div>
+
+                <!-- สามเหลี่ยมสีสถานะ -->
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 0;
+                    height: 0;
+                    border-left: 15px solid transparent;
+                    border-right: 15px solid transparent;
+                    border-bottom: 30px solid ${getStatusColor(station.status)};
+                    cursor: pointer;
+                ">
+                <div style="
+                    position: absolute;
+                    top: 8px;
+                    left: -8px;
+                    width: 16px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 12px;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+                  ">
+                  ${station.id}
+                </div>
+              </div>
             </div>
           `,
-          iconSize: [30, 30],
-          iconAnchor: [15, 15],
+          iconSize: [40, 40],
+          iconAnchor: [20, 40],
         })
+
 
         const popupContent = `
           <div style="
@@ -121,7 +149,16 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
               color: #1f2937;
               border-bottom: 2px solid ${getStatusColor(station.status)};
               padding-bottom: 6px;
-            ">${station.name}</h3>
+            ">
+              <a href="/station/${station.id}" target="_blank" style="
+                color: #1f2937;
+                text-decoration: none;
+                cursor: pointer;
+              " onmouseover="this.style.color='${getStatusColor(station.status)}'" 
+                 onmouseout="this.style.color='#1f2937'">
+                ${station.name}
+              </a>
+            </h3>
             
             <div style="margin-bottom: 8px;">
               <strong style="color: #374151;">ระดับน้ำปัจจุบัน:</strong>

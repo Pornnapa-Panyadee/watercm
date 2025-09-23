@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Droplets, ArrowLeft, RefreshCw, TrendingUp, TrendingDown, Minus, Waves, MapPin } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from "recharts"
 import WaterCrossSection from "@/components/water-cross-section"
+import Image from "next/image"
 
 interface StationDetailClientProps {
     stationId: string
@@ -36,8 +37,16 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     const API_ENDPOINTS = {
         1: null,
         2: null,
-        3: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021",
-        4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022",
+        3: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022",
+        4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021",
+    }
+
+
+    const image_station = {
+        1: "/images/stations/F21.jpg",
+        2: "/images/stations/f22.jpg",
+        3: "/images/stations/f22.jpg",
+        4: "/images/stations/F21.jpg",
     }
 
     const fetchStationData = async (stationId: number) => {
@@ -276,11 +285,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                 <h1 className="text-2xl font-bold text-foreground">{station.name}</h1>
                                 <p className="text-sm text-muted-foreground">
                                     อัปเดตล่าสุด: {station.lastUpdated.toLocaleTimeString("th-TH")}
-                                    {station.hasAPI && (
-                                        <Badge variant="outline" className="ml-2 text-xs">
-                                            API
-                                        </Badge>
-                                    )}
+                                    {station.hasAPI}
                                 </p>
                             </div>
                         </div>
@@ -294,166 +299,173 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
 
             <div className="container mx-auto px-4 py-6 space-y-6">
                 {/* Top section */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Station Image */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Droplets className="h-5 w-5" />
-                                รูปสถานี
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">
-                                    <Droplets className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                    <p className="text-sm">รูปภาพสถานี</p>
-                                    <p className="text-xs">{station.name}</p>
+                    <div className="lg:col-span-4">
+                        <Card className="h-full">
+                            <CardHeader className="pb-4">
+                                <CardTitle className="flex items-center gap-2">
+                                    <Droplets className="h-5 w-5" />
+                                    รูปสถานี
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                                    <Image
+                                        src={image_station[station.id as keyof typeof image_station] || "/placeholder.svg"}
+                                        alt={`รูปสถานี ${station.name}`}
+                                        width={400}
+                                        height={225}
+                                        className="w-full h-full object-cover"
+                                        priority
+                                    />
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Map */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <MapPin className="h-5 w-5" />
-                                แผนที่ที่ตั้ง
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">
-                                    <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                    <p className="text-sm">แผนที่ตำแหน่งสถานี</p>
-                                </div>
-                            </div>
-                            <div className="space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                    <span>ละติจูด:</span>
-                                    <span className="font-medium">{station.location.lat.toFixed(6)}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>ลองจิจูด:</span>
-                                    <span className="font-medium">{station.location.lng.toFixed(6)}</span>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
+                            </CardContent>
+                        </Card>
+                    </div>
                     {/* General Status */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center justify-between">
-                                สถานะข้อมูลทั่วไป
-                                {getTrendIcon(station.trend)}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="text-center p-3 bg-muted/50 rounded-lg">
-                                    <div className="flex items-center justify-center gap-1 mb-1">
-                                        <Droplets className="h-4 w-4 text-primary" />
-                                        <span className="text-sm font-medium">ระดับน้ำ</span>
+                    <div className="lg:col-span-6">
+                        <Card className="h-full">
+                            <CardHeader>
+                                <CardTitle className="flex items-center justify-between">
+                                    สถานะข้อมูลทั่วไป
+                                    {getTrendIcon(station.trend)}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-center p-3 bg-muted/50 rounded-lg">
+                                        <div className="flex items-center justify-center gap-1 mb-1">
+                                            <Droplets className="h-4 w-4 text-primary" />
+                                            <span className="text-sm font-medium">ระดับน้ำ</span>
+                                        </div>
+                                        <div className="text-2xl font-bold text-primary">{station.currentLevel.toFixed(2)}</div>
+                                        <div className="text-xs text-muted-foreground">เมตร (ม.รทก.)</div>
                                     </div>
-                                    <div className="text-2xl font-bold text-primary">{station.currentLevel.toFixed(2)}</div>
-                                    <div className="text-xs text-muted-foreground">เมตร (ม.รทก.)</div>
-                                </div>
-                                <div className="text-center p-3 bg-muted/50 rounded-lg">
-                                    <div className="flex items-center justify-center gap-1 mb-1">
-                                        <Waves className="h-4 w-4 text-blue-500" />
-                                        <span className="text-sm font-medium">อัตราการไหล</span>
+                                    <div className="text-center p-3 bg-muted/50 rounded-lg">
+                                        <div className="flex items-center justify-center gap-1 mb-1">
+                                            <Waves className="h-4 w-4 text-blue-500" />
+                                            <span className="text-sm font-medium">อัตราการไหล</span>
+                                        </div>
+                                        <div className="text-2xl font-bold text-blue-600">{station.flowRate.toFixed(1)}</div>
+                                        <div className="text-xs text-muted-foreground">ลบ.ม./วิ</div>
                                     </div>
-                                    <div className="text-2xl font-bold text-blue-600">{station.flowRate.toFixed(1)}</div>
-                                    <div className="text-xs text-muted-foreground">ลบ.ม./วิ</div>
                                 </div>
-                            </div>
 
-                            <div className="space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                    <span>ระดับปกติ:</span>
-                                    <span className="font-medium">{station.normalLevel.toFixed(2)} ม.</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>ระดับเตือนภัย:</span>
-                                    <span className="font-medium text-red-600">{station.maxLevel.toFixed(2)} ม.</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>ตลิ่งซ้าย:</span>
-                                    <span className="font-medium">{station.leftBank.toFixed(2)} ม.</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>ตลิ่งขวา:</span>
-                                    <span className="font-medium">{station.rightBank.toFixed(2)} ม.</span>
-                                </div>
-                            </div>
+                                <div className="space-y-2 text-sm">
 
-                            <div className="flex justify-center">
-                                <Badge className={getStatusColor(station.status)} variant="secondary">
-                                    {getStatusText(station.status)}
-                                </Badge>
-                            </div>
-                        </CardContent>
-                    </Card>
+                                    <div className="flex justify-between">
+                                        <span>ระดับเตือนภัย:</span>
+                                        <span className="font-medium text-yellow-600">{station.maxLevel.toFixed(2)} ม.</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>ระดับวิกฤติ:</span>
+                                        <span className="font-medium text-red-600">{station.normalLevel.toFixed(2)} ม.</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>ตลิ่งซ้าย:</span>
+                                        <span className="font-medium">{station.leftBank.toFixed(2)} ม.</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>ตลิ่งขวา:</span>
+                                        <span className="font-medium">{station.rightBank.toFixed(2)} ม.</span>
+                                    </div>
+                                </div>
+
+                            </CardContent>
+                        </Card>
+                    </div>
+                    {/* Map */}
+                    <div className="lg:col-span-2">
+                        <Card className="h-full">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <MapPin className="h-5 w-5" />
+                                    แผนที่ที่ตั้ง
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                                    <div className="text-center text-muted-foreground">
+                                        <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                                        <p className="text-sm">แผนที่ตำแหน่งสถานี</p>
+                                    </div>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span>ละติจูด:</span>
+                                        <span className="font-medium">{station.location.lat.toFixed(6)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>ลองจิจูด:</span>
+                                        <span className="font-medium">{station.location.lng.toFixed(6)}</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
                 </div>
 
                 {/* Bottom section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>ภาพตัดขวางระดับน้ำ</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="h-80">
-                                <WaterCrossSection
-                                    currentLevel={station.currentLevel}
-                                    maxLevel={station.maxLevel}
-                                    normalLevel={station.normalLevel}
-                                    status={station.status}
-                                    stationId={station.id}
-                                    rightBank={station.rightBank}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>กราฟระดับน้ำ 24 ชั่วโมงที่ผ่านมา</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="h-80">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={station.historicalData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="time" fontSize={12} interval="preserveStartEnd" />
-                                        <YAxis fontSize={12} domain={["dataMin - 0.5", "dataMax + 0.5"]} />
-                                        <Tooltip
-                                            labelFormatter={(value) => `เวลา: ${value}`}
-                                            formatter={(value: number) => [`${value.toFixed(2)} ม.`, "ระดับน้ำ"]}
-                                        />
-                                        <Line
-                                            type="monotone"
-                                            dataKey="level"
-                                            stroke={
-                                                station.status === "high"
-                                                    ? "#ef4444"
-                                                    : station.status === "low"
-                                                        ? "#eab308"
-                                                        : station.status === "warning"
-                                                            ? "#f59e0b"
-                                                            : "#3b82f6"
-                                            }
-                                            strokeWidth={2}
-                                            dot={false}
-                                            activeDot={{ r: 4 }}
-                                        />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </CardContent>
-                    </Card>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div className="lg:col-span-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>ภาพตัดขวางระดับน้ำ</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="h-80">
+                                    <WaterCrossSection
+                                        currentLevel={station.currentLevel}
+                                        maxLevel={station.maxLevel}
+                                        normalLevel={station.normalLevel}
+                                        status={station.status}
+                                        stationId={station.id}
+                                        rightBank={station.rightBank}
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="lg:col-span-8">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>กราฟระดับน้ำ 24 ชั่วโมงที่ผ่านมา</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="h-80">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <LineChart data={station.historicalData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="time" fontSize={12} interval="preserveStartEnd" />
+                                            <YAxis fontSize={12} domain={["dataMin - 0.5", "dataMax + 0.5"]} />
+                                            <Tooltip
+                                                labelFormatter={(value) => `เวลา: ${value}`}
+                                                formatter={(value: number) => [`${value.toFixed(2)} ม.`, "ระดับน้ำ"]}
+                                            />
+                                            <Line
+                                                type="monotone"
+                                                dataKey="level"
+                                                stroke={
+                                                    station.status === "high"
+                                                        ? "#ef4444"
+                                                        : station.status === "low"
+                                                            ? "#eab308"
+                                                            : station.status === "warning"
+                                                                ? "#f59e0b"
+                                                                : "#3b82f6"
+                                                }
+                                                strokeWidth={2}
+                                                dot={false}
+                                                activeDot={{ r: 4 }}
+                                            />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
         </div>

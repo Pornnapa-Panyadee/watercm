@@ -15,8 +15,12 @@ const generateHistoricalData = (currentLevel: number, normalLevel: number) => {
 
   for (let i = 11; i >= 0; i--) {
     const time = new Date(now.getTime() - i * 60 * 60 * 1000) // 12 hours back
-    const variation = (Math.random() - 0.5) * 0.3 // Random variation
-    const level = Math.max(0, currentLevel + variation - i * 0.02) // Slight trend
+
+    // 👇 เพิ่มแรงเหวี่ยง (สุ่มได้ตั้งแต่ -2.5 ถึง +2.5)
+    const variation = (Math.random() - 0.5) * 5
+
+    // 👇 ปรับ slope ให้ดรอปแรงขึ้น (0.05 ต่อชั่วโมง)
+    const level = Math.max(0, currentLevel + variation - i * 0.05)
 
     data.push({
       time: time.getHours() + ":00",
@@ -27,6 +31,7 @@ const generateHistoricalData = (currentLevel: number, normalLevel: number) => {
 
   return data
 }
+
 
 const API_ENDPOINTS = {
   3: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022", // FBP.2 - สะพานเม็งราย
@@ -80,12 +85,12 @@ const initialStations = [
     name: "P.1 - สะพานนวรัฐ",
     location: { lat: 18.787584, lng: 99.004632 },
     currentLevel: 5.45,
-    normalLevel: 5.5,
-    maxLevel: 6.7,
+    normalLevel: 6.0,
+    maxLevel: 8.7,
     leftBank: 9.75,
     rightBank: 10.5,
     flowRate: 0.0, // m³/s
-    status: "warning",
+    status: "normal",
     lastUpdated: new Date(),
     trend: "stable",
     historicalData: generateHistoricalData(5.45, 5.5),
@@ -132,8 +137,8 @@ export default function WaterDashboard() {
   const [isLoading, setIsLoading] = useState(false)
 
   const determineStatus = (currentLevel: number, normalLevel: number, maxLevel: number) => {
-    if (currentLevel >= maxLevel * 0.8) return "high"
-    if (currentLevel <= normalLevel * 0.7) return "low"
+    if (currentLevel >= maxLevel * 0.9) return "high"
+    if (currentLevel <= normalLevel * 0.5) return "low"
     return "normal"
   }
 
@@ -247,7 +252,7 @@ export default function WaterDashboard() {
               <Droplets className="h-8 w-8 text-primary" />
               <div>
                 <h1 className="text-2xl font-bold text-foreground">ระบบติดตามระดับน้ำ</h1>
-                <p className="text-sm text-muted-foreground">อัปเดตล่าสุด: {lastRefresh.toLocaleTimeString("th-TH")}</p>
+                {/* <p className="text-sm text-muted-foreground">อัปเดตล่าสุด: {lastRefresh.toLocaleTimeString("th-TH")}</p> */}
               </div>
             </div>
             <Button onClick={refreshData} variant="outline" size="sm" disabled={isLoading}>
@@ -273,7 +278,7 @@ export default function WaterDashboard() {
         </Card>
 
         {/* Water Level Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {stations.map((station) => (
             <Card key={station.id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
@@ -286,11 +291,11 @@ export default function WaterDashboard() {
                       >
                         {station.name}
                       </button>
-                      {station.hasAPI && (
+                      {/* {station.hasAPI && (
                         <Badge variant="outline" className="text-xs">
                           API
                         </Badge>
-                      )}
+                      )} */}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
                       อัปเดต: {station.lastUpdated.toLocaleTimeString("th-TH")}
@@ -300,10 +305,10 @@ export default function WaterDashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="space-y-3">
+                <div className="space-y-1">
+                  <div className="space-y-1">
                     {/* Values */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2">
                       <div className="text-center p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center justify-center gap-1 mb-1">
                           <Droplets className="h-4 w-4 text-primary" />
