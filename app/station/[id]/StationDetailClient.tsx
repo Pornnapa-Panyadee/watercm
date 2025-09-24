@@ -8,6 +8,7 @@ import { Droplets, ArrowLeft, RefreshCw, TrendingUp, TrendingDown, Minus, Waves,
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from "recharts"
 import WaterCrossSection from "@/components/water-cross-section"
 import Image from "next/image"
+import LeafletMap from "@/components/leaflet-station"
 
 interface StationDetailClientProps {
     stationId: string
@@ -16,6 +17,7 @@ interface StationDetailClientProps {
 export default function StationDetailClient({ stationId }: StationDetailClientProps) {
     const router = useRouter()
     const numericId = Number.parseInt(stationId)
+    const [selectedStation, setSelectedStation] = useState<number | null>(null)
 
     // ===== Helpers =====
     const generateHistoricalData = (currentLevel: number, normalLevel: number) => {
@@ -72,6 +74,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         {
             id: 1,
             name: "P.67 - สะพานแม่แฝก",
+            location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
+            location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
             location: { lat: 19.009787, lng: 98.959635 },
             currentLevel: 4.73,
             normalLevel: 8.0,
@@ -79,6 +83,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             leftBank: 13.5,
             rightBank: 13.5,
             flowRate: 0.0,
+            bm: 300,
             status: "normal",
             lastUpdated: new Date(),
             trend: "down",
@@ -87,14 +92,17 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         {
             id: 2,
             name: "P.1 - สะพานนวรัฐ",
+            location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
+            location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
             location: { lat: 18.787584, lng: 99.004632 },
             currentLevel: 5.45,
             normalLevel: 5.5,
             maxLevel: 6.7,
             leftBank: 9.75,
             rightBank: 10.5,
+            bm: 300,
             flowRate: 0.0,
-            status: "warning",
+            status: "normal",
             lastUpdated: new Date(),
             trend: "stable",
             hasAPI: false,
@@ -102,6 +110,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         {
             id: 3,
             name: "FBP.2 - สะพานเม็งราย",
+            location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
+            location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
             location: { lat: 18.766187, lng: 99.003291 },
             currentLevel: 10.85,
             normalLevel: 9.0,
@@ -109,6 +119,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             leftBank: 9.7,
             rightBank: 9.8,
             flowRate: 0.0,
+            bm: 300,
             status: "normal",
             lastUpdated: new Date(),
             trend: "up",
@@ -118,13 +129,16 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             id: 4,
             name: "FBP.3 - สะพานวัดเกาะกลาง",
             location: { lat: 18.741756, lng: 98.983531 },
+            location_name_TH: "สะพานวัดเกาะกลาง ต.ป่าแดด อ.เมือง จ.เชียงใหม่",
+            location_name_Eng: "Wat Ko Klang Bridge, Pa Daet, Muang, Chiang Mai",
             currentLevel: 6.2,
             normalLevel: 13.0,
             maxLevel: 12.5,
             leftBank: 13.35,
             rightBank: 13.37,
             flowRate: 0.0,
-            status: "high",
+            bm: 300,
+            status: "normal",
             lastUpdated: new Date(),
             trend: "up",
             hasAPI: true,
@@ -144,8 +158,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
 
     // ===== Helpers =====
     const determineStatus = (currentLevel: number, normalLevel: number, maxLevel: number) => {
-        if (currentLevel >= maxLevel * 0.8) return "high"
-        if (currentLevel <= normalLevel * 0.7) return "low"
+        if (currentLevel >= maxLevel * 0.9) return "high"
+        if (currentLevel <= normalLevel * 0.5) return "low"
         return "normal"
     }
 
@@ -268,6 +282,12 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             </div>
         )
     }
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value
+        if (value) {
+        router.push(`/station/${value}`)
+        }
+    }
 
     return (
         <div className="min-h-screen bg-background">
@@ -298,6 +318,38 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             </header>
 
             <div className="container mx-auto px-4 py-6 space-y-6">
+
+                {/* Dropdown and left content */}
+                <div className="container mx-auto px-4 py-6 space-y-6">
+                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* เนื้อหาด้านซ้าย */}
+                        <div className="col-span-10">
+                        {/* ใส่อะไรก็ได้ */}
+                        </div>
+
+                        {/* Dropdown ด้านขวา */}
+                        <div className="col-span-2">
+                            <select
+                                onChange={handleChange}
+                                defaultValue=""
+                                id="dropdown"
+                                className="block w-full rounded-xl border-2 border-blue-400 bg-gradient-to-r from-blue-50 to-blue-100 
+                                        text-gray-700 text-base font-medium shadow-lg py-2 px-4 
+                                        focus:border-blue-500 focus:ring-4 focus:ring-blue-300 
+                                        hover:from-blue-100 hover:to-blue-200 transition-all duration-200 ease-in-out"
+                            >
+                                <option value="" disabled>
+                                -- กรุณาเลือกสถานี --
+                                </option>
+                                <option value="1">P.67 - สะพานแม่แฝก</option>
+                                <option value="2">P.68 - สะพานแม่แฝก</option>
+                                <option value="3">P.69 - สะพานแม่แฝก</option>
+                                <option value="4">P.70 - สะพานแม่แฝก</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Top section */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Station Image */}
@@ -324,11 +376,11 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                         </Card>
                     </div>
                     {/* General Status */}
-                    <div className="lg:col-span-6">
+                    <div className="lg:col-span-5">
                         <Card className="h-full">
                             <CardHeader>
                                 <CardTitle className="flex items-center justify-between">
-                                    สถานะข้อมูลทั่วไป
+                                    สถานะข้อมูลทั่วไป : {station.location_name_TH}
                                     {getTrendIcon(station.trend)}
                                 </CardTitle>
                             </CardHeader>
@@ -339,7 +391,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                             <Droplets className="h-4 w-4 text-primary" />
                                             <span className="text-sm font-medium">ระดับน้ำ</span>
                                         </div>
-                                        <div className="text-2xl font-bold text-primary">{station.currentLevel.toFixed(2)}</div>
+                                        <div className="text-2xl font-bold text-primary">{station.currentLevel.toFixed(2)} ({(station.bm + station.currentLevel).toFixed(2)})</div>
                                         <div className="text-xs text-muted-foreground">เมตร (ม.รทก.)</div>
                                     </div>
                                     <div className="text-center p-3 bg-muted/50 rounded-lg">
@@ -376,21 +428,19 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                         </Card>
                     </div>
                     {/* Map */}
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-3">
                         <Card className="h-full">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <MapPin className="h-5 w-5" />
                                     แผนที่ที่ตั้ง
                                 </CardTitle>
+                                <CardContent>
+                                    <LeafletMap stations={[station]} selectedStation={selectedStation} onStationSelect={setSelectedStation} />
+                                </CardContent>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                    <div className="text-center text-muted-foreground">
-                                        <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                        <p className="text-sm">แผนที่ตำแหน่งสถานี</p>
-                                    </div>
-                                </div>
+                                
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
                                         <span>ละติจูด:</span>
