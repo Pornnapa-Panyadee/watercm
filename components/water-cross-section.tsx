@@ -21,8 +21,9 @@ export default function WaterCrossSection({
         const imageMap: { [key: number]: string } = {
             1: "/images/p67.png", // P.67 - สะพานแม่แฝก
             2: "/images/p1.png", // P.1 - สะพานนวรัฐ
-            3: "/images/floodboy22.png", // FBP.2 - สะพานเม็งราย
-            4: "/images/floodboy21.png", // FBP.3 - สะพานวัดเกาะกลาง
+            3: "/images/p1.png", // P.1 - สะพานนวรัฐ
+            4: "/images/floodboy22.png", // FBP.2 - สะพานเม็งราย
+            5: "/images/floodboy21.png", // FBP.3 - สะพานวัดเกาะกลาง
         }
         return imageMap[stationId] || "/images/p67.png" // Default to p67.png
     }

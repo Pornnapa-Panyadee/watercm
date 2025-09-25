@@ -391,7 +391,7 @@ export default function WaterDashboard() {
                   </div>
 
                   <div>
-                    <div className="text-xs font-medium mb-1 text-center">ภาพตัดขวางระดับน้ำ</div>
+                    <div className="text-xs font-medium mb-1 text-center">ภาพตัดขวางลำน้ำ</div>
                     <WaterCrossSection
                       currentLevel={station.currentLevel}
                       maxLevel={station.maxLevel}

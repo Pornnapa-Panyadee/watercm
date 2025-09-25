@@ -490,7 +490,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                     <div className="lg:col-span-4">
                         <Card>
                             <CardHeader>
-                                <CardTitle>ภาพตัดขวางระดับน้ำ</CardTitle>
+                                <CardTitle>ภาพตัดขวางลำน้ำ</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="h-80">
