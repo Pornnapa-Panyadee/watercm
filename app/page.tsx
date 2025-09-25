@@ -34,8 +34,8 @@ const generateHistoricalData = (currentLevel: number, normalLevel: number) => {
 
 
 const API_ENDPOINTS = {
-  3: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022", // FBP.2 - สะพานเม็งราย
-  4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021", // FBP.3 - สะพานวัดเกาะกลาง
+  4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022", // FBP.2 - สะพานเม็งราย
+  5: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021", // FBP.3 - สะพานวัดเกาะกลาง
 }
 
 const fetchStationData = async (stationId: number) => {
@@ -66,7 +66,10 @@ const fetchStationData = async (stationId: number) => {
 const initialStations = [
   {
     id: 1,
+    code_id: "P67",
     name: "P.67 - สะพานแม่แฝก",
+    location_name_TH: "สะพานแม่แฝก 	บ้านแม่แต ต.แม่แฝกเก่า อ.สันทราย จ.เชียงใหม่",
+    location_name_Eng: "Mae Faek Bridge, Ban Mae Tae, Mae Faek Kao, San Sai, Chiang Mai",
     location: { lat: 19.009787, lng: 98.959635 },
     currentLevel: 4.73,
     normalLevel: 8.0,
@@ -75,6 +78,7 @@ const initialStations = [
     rightBank: 13.5,
     flowRate: 0.0, // m³/s
     status: "normal",
+    bm: 315.926,
     lastUpdated: new Date(),
     trend: "down",
     historicalData: generateHistoricalData(4.73, 8.0),
@@ -82,14 +86,18 @@ const initialStations = [
   },
   {
     id: 2,
-    name: "P.1 - สะพานนวรัฐ",
-    location: { lat: 18.787584, lng: 99.004632 },
+    code_id: "P103",
+    name: "P.103 - สะพานป่าข่อยใต้",
+    location_name_TH: "สะพานป่าข่อยใต้ ต.สันผีเสื้อ อ.เมือง จ.เชียงใหม่",
+    location_name_Eng: "Pa Koi Bridge, San Phi Suea, Muang, Chiang Mai",
+    location: { lat: 18.8665052, lng: 98.978431 },
     currentLevel: 5.45,
     normalLevel: 6.0,
     maxLevel: 8.7,
     leftBank: 9.75,
     rightBank: 10.5,
     flowRate: 0.0, // m³/s
+    bm: 315.926,
     status: "normal",
     lastUpdated: new Date(),
     trend: "stable",
@@ -98,7 +106,30 @@ const initialStations = [
   },
   {
     id: 3,
-    name: "FBP.2 - สะพานเม็งราย",
+    code_id: "P1",
+    name: "P.1 - สะพานนวรัฐ",
+    location_name_TH: "สะพานนวรัฐ ต.วัดเกตุ อ.เมือง จ.เชียงใหม่",
+    location_name_Eng: "Nawarat Bridge, Wat Ket, Muang, Chiang Mai",
+    location: { lat: 18.787584, lng: 99.004632 },
+    currentLevel: 5.45,
+    normalLevel: 6.0,
+    maxLevel: 8.7,
+    leftBank: 9.75,
+    rightBank: 10.5,
+    flowRate: 0.0, // m³/s
+    bm: 300.5,
+    status: "normal",
+    lastUpdated: new Date(),
+    trend: "stable",
+    historicalData: generateHistoricalData(5.45, 5.5),
+    hasAPI: false,
+  },
+  {
+    id: 4,
+    code_id: "FB2",
+    name: "FB.2 - สะพานเม็งราย",
+    location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
+    location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
     location: { lat: 18.766187, lng: 99.003291 },
     currentLevel: 10.85,
     normalLevel: 9.0,
@@ -106,6 +137,7 @@ const initialStations = [
     leftBank: 9.7,
     rightBank: 9.8,
     flowRate: 0.0, // m³/s
+    bm: 290,
     status: "normal",
     lastUpdated: new Date(),
     trend: "up",
@@ -113,8 +145,11 @@ const initialStations = [
     hasAPI: true,
   },
   {
-    id: 4,
-    name: "FBP.3 - สะพานวัดเกาะกลาง",
+    id: 5,
+    code_id: "FB3",
+    name: "FB.3 - สะพานวัดเกาะกลาง",
+    location_name_TH: "สะพานวัดเกาะกลาง ต.ป่าแดด อ.เมือง จ.เชียงใหม่",
+    location_name_Eng: "Wat Ko Klang Bridge, Pa Daet, Muang, Chiang Mai",
     location: { lat: 18.741756, lng: 98.983531 },
     currentLevel: 6.2,
     normalLevel: 13.0,
@@ -122,7 +157,8 @@ const initialStations = [
     leftBank: 13.35,
     rightBank: 13.37,
     flowRate: 0.0, // m³/s
-    status: "high",
+    bm: 280,
+    status: "normal",
     lastUpdated: new Date(),
     trend: "up",
     historicalData: generateHistoricalData(6.2, 13.0),
@@ -138,7 +174,7 @@ export default function WaterDashboard() {
 
   const determineStatus = (currentLevel: number, normalLevel: number, maxLevel: number) => {
     if (currentLevel >= maxLevel * 0.9) return "high"
-    if (currentLevel <= normalLevel * 0.5) return "low"
+    if (currentLevel <= normalLevel * 0.2) return "low"
     return "normal"
   }
 
@@ -278,7 +314,7 @@ export default function WaterDashboard() {
         </Card>
 
         {/* Water Level Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {stations.map((station) => (
             <Card key={station.id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
@@ -355,7 +391,7 @@ export default function WaterDashboard() {
                   </div>
 
                   <div>
-                    <div className="text-xs font-medium mb-2 text-center">ภาพตัดขวางระดับน้ำ</div>
+                    <div className="text-xs font-medium mb-1 text-center">ภาพตัดขวางระดับน้ำ</div>
                     <WaterCrossSection
                       currentLevel={station.currentLevel}
                       maxLevel={station.maxLevel}

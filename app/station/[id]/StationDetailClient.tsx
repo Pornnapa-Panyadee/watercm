@@ -39,8 +39,9 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     const API_ENDPOINTS = {
         1: null,
         2: null,
-        3: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022",
-        4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021",
+        3: null,
+        4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022",
+        5: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021",
     }
 
 
@@ -48,7 +49,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         1: "/images/stations/F21.jpg",
         2: "/images/stations/f22.jpg",
         3: "/images/stations/f22.jpg",
-        4: "/images/stations/F21.jpg",
+        4: "/images/stations/f22.jpg",
+        5: "/images/stations/F21.jpg",
     }
 
     const fetchStationData = async (stationId: number) => {
@@ -73,43 +75,68 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     const initialStations = [
         {
             id: 1,
+            code_id: "P67",
             name: "P.67 - สะพานแม่แฝก",
-            location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
-            location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
+            location_name_TH: "สะพานแม่แฝก 	บ้านแม่แต ต.แม่แฝกเก่า อ.สันทราย จ.เชียงใหม่",
+            location_name_Eng: "Mae Faek Bridge, Ban Mae Tae, Mae Faek Kao, San Sai, Chiang Mai",
             location: { lat: 19.009787, lng: 98.959635 },
             currentLevel: 4.73,
             normalLevel: 8.0,
             maxLevel: 12.2,
             leftBank: 13.5,
             rightBank: 13.5,
-            flowRate: 0.0,
-            bm: 300,
+            flowRate: 0.0, // m³/s
             status: "normal",
+            bm: 315.926,
             lastUpdated: new Date(),
             trend: "down",
+            historicalData: generateHistoricalData(4.73, 8.0),
             hasAPI: false,
         },
         {
             id: 2,
-            name: "P.1 - สะพานนวรัฐ",
-            location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
-            location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
-            location: { lat: 18.787584, lng: 99.004632 },
+            code_id: "P103",
+            name: "P.103 - สะพานป่าข่อยใต้",
+            location_name_TH: "สะพานป่าข่อยใต้ ต.สันผีเสื้อ อ.เมือง จ.เชียงใหม่",
+            location_name_Eng: "Pa Koi Bridge, San Phi Suea, Muang, Chiang Mai",
+            location: { lat: 18.8665052, lng: 98.978431 },
             currentLevel: 5.45,
-            normalLevel: 5.5,
-            maxLevel: 6.7,
+            normalLevel: 6.0,
+            maxLevel: 8.7,
             leftBank: 9.75,
             rightBank: 10.5,
-            bm: 300,
-            flowRate: 0.0,
+            flowRate: 0.0, // m³/s
+            bm: 315.926,
             status: "normal",
             lastUpdated: new Date(),
             trend: "stable",
+            historicalData: generateHistoricalData(5.45, 5.5),
             hasAPI: false,
         },
         {
             id: 3,
-            name: "FBP.2 - สะพานเม็งราย",
+            code_id: "P1",
+            name: "P.1 - สะพานนวรัฐ",
+            location_name_TH: "สะพานนวรัฐ ต.วัดเกตุ อ.เมือง จ.เชียงใหม่",
+            location_name_Eng: "Nawarat Bridge, Wat Ket, Muang, Chiang Mai",
+            location: { lat: 18.787584, lng: 99.004632 },
+            currentLevel: 5.45,
+            normalLevel: 6.0,
+            maxLevel: 8.7,
+            leftBank: 9.75,
+            rightBank: 10.5,
+            flowRate: 0.0, // m³/s
+            bm: 300.5,
+            status: "normal",
+            lastUpdated: new Date(),
+            trend: "stable",
+            historicalData: generateHistoricalData(5.45, 5.5),
+            hasAPI: false,
+        },
+        {
+            id: 4,
+            code_id: "FB2",
+            name: "FB.2 - สะพานเม็งราย",
             location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
             location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
             location: { lat: 18.766187, lng: 99.003291 },
@@ -118,32 +145,36 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             maxLevel: 9.0,
             leftBank: 9.7,
             rightBank: 9.8,
-            flowRate: 0.0,
-            bm: 300,
+            flowRate: 0.0, // m³/s
+            bm: 290,
             status: "normal",
             lastUpdated: new Date(),
             trend: "up",
+            historicalData: generateHistoricalData(10.85, 9.0),
             hasAPI: true,
         },
         {
-            id: 4,
-            name: "FBP.3 - สะพานวัดเกาะกลาง",
-            location: { lat: 18.741756, lng: 98.983531 },
+            id: 5,
+            code_id: "FB3",
+            name: "FB.3 - สะพานวัดเกาะกลาง",
             location_name_TH: "สะพานวัดเกาะกลาง ต.ป่าแดด อ.เมือง จ.เชียงใหม่",
             location_name_Eng: "Wat Ko Klang Bridge, Pa Daet, Muang, Chiang Mai",
+            location: { lat: 18.741756, lng: 98.983531 },
             currentLevel: 6.2,
             normalLevel: 13.0,
             maxLevel: 12.5,
             leftBank: 13.35,
             rightBank: 13.37,
-            flowRate: 0.0,
-            bm: 300,
+            flowRate: 0.0, // m³/s
+            bm: 280,
             status: "normal",
             lastUpdated: new Date(),
             trend: "up",
+            historicalData: generateHistoricalData(6.2, 13.0),
             hasAPI: true,
         },
     ]
+
 
     // ===== State =====
     const [station, setStation] = useState(() => {
@@ -159,7 +190,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     // ===== Helpers =====
     const determineStatus = (currentLevel: number, normalLevel: number, maxLevel: number) => {
         if (currentLevel >= maxLevel * 0.9) return "high"
-        if (currentLevel <= normalLevel * 0.5) return "low"
+        if (currentLevel <= normalLevel * 0.3) return "low"
         return "normal"
     }
 
@@ -285,7 +316,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value
         if (value) {
-        router.push(`/station/${value}`)
+            router.push(`/station/${value}`)
         }
     }
 
@@ -321,14 +352,14 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
 
                 {/* Dropdown and left content */}
                 <div className="container mx-auto px-4 py-6 space-y-6">
-                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         {/* เนื้อหาด้านซ้าย */}
                         <div className="col-span-10">
-                        {/* ใส่อะไรก็ได้ */}
+                            {/* ใส่อะไรก็ได้ */}
                         </div>
 
                         {/* Dropdown ด้านขวา */}
-                        <div className="col-span-2">
+                        <div className="col-span-2 gap-12">
                             <select
                                 onChange={handleChange}
                                 defaultValue=""
@@ -339,12 +370,13 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                         hover:from-blue-100 hover:to-blue-200 transition-all duration-200 ease-in-out"
                             >
                                 <option value="" disabled>
-                                -- กรุณาเลือกสถานี --
+                                    -- กรุณาเลือกสถานี --
                                 </option>
                                 <option value="1">P.67 - สะพานแม่แฝก</option>
-                                <option value="2">P.68 - สะพานแม่แฝก</option>
-                                <option value="3">P.69 - สะพานแม่แฝก</option>
-                                <option value="4">P.70 - สะพานแม่แฝก</option>
+                                <option value="2">P.103 - สะพานป่าข่อยใต้</option>
+                                <option value="3">P.1 - สะพานนวรัฐ</option>
+                                <option value="4">FB.2 - สะพานเม็งราย</option>
+                                <option value="5">FB.3 - สะพานวัดเกาะกลาง</option>
                             </select>
                         </div>
                     </div>
@@ -440,7 +472,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                 </CardContent>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                
+
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
                                         <span>ละติจูด:</span>

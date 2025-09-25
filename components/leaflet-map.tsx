@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react"
 // Define types for our station data
 interface Station {
   id: number
+  code_id: string
   name: string
   location: { lat: number; lng: number }
   currentLevel: number
@@ -68,7 +69,7 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
       })
 
       // Initialize map centered on new coordinates and adjusted zoom level
-      const map = L.map(mapRef.current!).setView([18.75787584, 99.004632], 12)
+      const map = L.map(mapRef.current!).setView([18.810787584, 99.004632], 12)
 
       L.tileLayer("https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}", {
         attribution: '© <a href="https://www.google.com/maps">Google Maps</a>',
@@ -94,9 +95,9 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
                     left: -4px; /* ระยะห่างจากด้านซ้าย */
                     width: 0;
                     height: 0;
-                    border-left: 19px solid transparent;
-                    border-right: 19px solid transparent;
-                    border-bottom: 36px solid white; /* ✅ สามเหลี่ยมขาว (เป็นขอบ) */
+                    border-left: 21px solid transparent;
+                    border-right: 21px solid transparent;
+                    border-bottom: 38px solid white; /* ✅ สามเหลี่ยมขาว (เป็นขอบ) */
                     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
                 "></div>
 
@@ -107,9 +108,9 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
                     left: 0;
                     width: 0;
                     height: 0;
-                    border-left: 15px solid transparent;
-                    border-right: 15px solid transparent;
-                    border-bottom: 30px solid ${getStatusColor(station.status)};
+                    border-left: 17px solid transparent;
+                    border-right: 18px solid transparent;
+                    border-bottom: 32px solid ${getStatusColor(station.status)};
                     cursor: pointer;
                 ">
                 <div style="
@@ -119,14 +120,14 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
                     width: 16px;
                     height: 24px;
                     display: flex;
-                    align-items: center;
+                    align-items: flex-end;
                     justify-content: center;
-                    color: white;
+                    color: rgba(255, 255, 255);
                     font-weight: bold;
-                    font-size: 12px;
+                    font-size: 10px;
                     text-shadow: 0 1px 2px rgba(0,0,0,0.8);
                   ">
-                  ${station.id}
+                  ${station.code_id}
                 </div>
               </div>
             </div>
