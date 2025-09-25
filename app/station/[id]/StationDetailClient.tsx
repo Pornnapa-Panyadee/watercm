@@ -340,10 +340,6 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                 </p>
                             </div>
                         </div>
-                        <Button onClick={refreshData} variant="outline" size="sm" disabled={isLoading}>
-                            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-                            {isLoading ? "กำลังโหลด..." : "รีเฟรช"}
-                        </Button>
                     </div>
                 </div>
             </header>
@@ -359,7 +355,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                         </div>
 
                         {/* Dropdown ด้านขวา */}
-                        <div className="col-span-2 gap-12">
+                        <div className="col-span-12 sm:col-span-2 gap-1">
                             <select
                                 onChange={handleChange}
                                 defaultValue=""
