@@ -28,9 +28,9 @@ export default function WaterCrossSection({
     }
 
     const chartWidth = "100%"
-    const chartHeight = "100%"
+    const chartHeight = "80%"
 
-    const containerHeight = 150 // Fixed height for calculations
+    const containerHeight = 210 // Fixed height for calculations
     const waterLevelPercent = Math.min(100, (currentLevel / (rightBank * 1.4)) * 100)
     const maxLevelPercent = Math.min(100, (maxLevel / (rightBank * 1.4)) * 100)
 
