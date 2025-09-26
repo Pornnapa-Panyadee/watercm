@@ -140,13 +140,13 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
             location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
             location: { lat: 18.766187, lng: 99.003291 },
-            currentLevel: 10.85,
-            normalLevel: 9.0,
-            maxLevel: 9.0,
+            currentLevel: 8.85,
+            normalLevel: 9.2,
+            maxLevel: 9.5,
             leftBank: 9.7,
             rightBank: 9.8,
             flowRate: 0.0, // m³/s
-            bm: 290,
+            bm: 294.2,
             status: "normal",
             lastUpdated: new Date(),
             trend: "up",
@@ -436,19 +436,20 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
 
                                     <div className="flex justify-between">
                                         <span>ระดับเตือนภัย:</span>
-                                        <span className="font-medium text-yellow-600">{station.maxLevel.toFixed(2)} ม.</span>
+                                        <span className="font-medium text-yellow-600">{station.maxLevel.toFixed(2)} ม. ({(station.maxLevel+station.bm ).toFixed(2)} ม.รทก.)</span>
+
                                     </div>
                                     <div className="flex justify-between">
                                         <span>ระดับวิกฤติ:</span>
-                                        <span className="font-medium text-red-600">{station.normalLevel.toFixed(2)} ม.</span>
+                                        <span className="font-medium text-red-600">{station.normalLevel.toFixed(2)} ม. ({(station.normalLevel+station.bm ).toFixed(2)} ม.รทก.)</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>ตลิ่งซ้าย:</span>
-                                        <span className="font-medium">{station.leftBank.toFixed(2)} ม.</span>
+                                        <span className="font-medium">{station.leftBank.toFixed(2)} ม. ({(station.leftBank+station.bm ).toFixed(2)} ม.รทก.)</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>ตลิ่งขวา:</span>
-                                        <span className="font-medium">{station.rightBank.toFixed(2)} ม.</span>
+                                        <span className="font-medium">{station.rightBank.toFixed(2)} ม. ({(station.rightBank+station.bm ).toFixed(2)} ม.รทก.) </span>
                                     </div>
                                 </div>
 
@@ -501,6 +502,9 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                         status={station.status}
                                         stationId={station.id}
                                         rightBank={station.rightBank}
+                                        leftBank={station.leftBank}
+                                        bm={station.bm}
+
                                     />
                                 </div>
                             </CardContent>

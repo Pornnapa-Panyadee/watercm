@@ -131,13 +131,13 @@ const initialStations = [
     location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
     location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
     location: { lat: 18.766187, lng: 99.003291 },
-    currentLevel: 10.85,
+    currentLevel: 8.85,
     normalLevel: 9.0,
-    maxLevel: 9.0,
+    maxLevel: 9.5,
     leftBank: 9.7,
     rightBank: 9.8,
     flowRate: 0.0, // m³/s
-    bm: 290,
+    bm: 294.2,
     status: "normal",
     lastUpdated: new Date(),
     trend: "up",
@@ -364,7 +364,7 @@ export default function WaterDashboard() {
                     </div>
 
                     {/* Chart */}
-                    <div className="h-16">
+                    {/* <div className="h-16">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={station.historicalData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
                           <XAxis dataKey="time" hide />
@@ -387,7 +387,7 @@ export default function WaterDashboard() {
                           />
                         </LineChart>
                       </ResponsiveContainer>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div>
@@ -399,6 +399,8 @@ export default function WaterDashboard() {
                       status={station.status}
                       stationId={station.id}
                       rightBank={station.rightBank}
+                      leftBank={station.leftBank}
+                      bm={station.bm}
                     />
                   </div>
 
