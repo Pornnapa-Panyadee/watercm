@@ -71,7 +71,7 @@ export default function WaterCrossSection({
                 //className="absolute right-1 text-black px-2 py-1 rounded text-xs font-bold z-20"
                 style={{ bottom: `${rightBankPercent + 10}%`, transform: "translateY(50%)" }}
             >
-                ตลิ่งขวา {rightBank.toFixed(1)} ม. <p>( {(bm+rightBank).toFixed(1)} ม.รทก.)</p>
+                ตลิ่งขวา {rightBank.toFixed(2)} ม. <p>( {(bm+rightBank).toFixed(2)} ม.รทก.)</p>
                 {/* ตลิ่งขวา {rightBank.toFixed(1)} ม. ({(rightBank + 304).toFixed(1)} ม.ทรก.) */}
             </div> 
 
@@ -79,7 +79,7 @@ export default function WaterCrossSection({
                 className="absolute left-2 bg-gray-200 text-black px-1 py-1 rounded text-xs z-20"
                 style={{ bottom: `${leftBankPercent+10}%`, transform: "translateY(50%)" }}
             >
-                ตลิ่งซ้าย {leftBank.toFixed(1)} ม.  <p>( {(bm+leftBank).toFixed(1)} ม.รทก.)</p>
+                ตลิ่งซ้าย {leftBank.toFixed(2)} ม.  <p>( {(bm+leftBank).toFixed(2)} ม.รทก.)</p>
                 {/* ตลิ่งซ้าย {leftBank.toFixed(1)} ม. ({(leftBank + 304).toFixed(1)} ม.ทรก.) */}
             </div> 
 
@@ -87,7 +87,7 @@ export default function WaterCrossSection({
                 className="absolute left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold z-20"
                 style={{ bottom: `${waterLevelPercent + 10}%`, transform: "translate(-50%, 50%)" }}
             >
-                ระดับน้ำ {currentLevel.toFixed(2)} ม. <p>( {(bm+currentLevel).toFixed(1)} ม.รทก.)</p>
+                ระดับน้ำ {currentLevel.toFixed(2)} ม. <p>( {(bm+currentLevel).toFixed(2)} ม.รทก.)</p>
             </div>
         </div>
     )
