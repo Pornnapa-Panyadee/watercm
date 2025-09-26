@@ -137,7 +137,7 @@ const initialStations = [
     leftBank: 9.7,
     rightBank: 9.8,
     flowRate: 0.0, // m³/s
-    bm: 294.2,
+    bm: 294.97,
     status: "normal",
     lastUpdated: new Date(),
     trend: "up",
