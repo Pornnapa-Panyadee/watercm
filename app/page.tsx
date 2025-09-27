@@ -136,7 +136,7 @@ const initialStations = [
     maxLevel: 9,
     leftBank: 9.7,
     rightBank: 9.8,
-    flowRate: 393.0, // m³/s
+    flowRate: 425.00, // m³/s
     bm: 294.97,
     status: "normal",
     lastUpdated: new Date(),
@@ -156,7 +156,7 @@ const initialStations = [
     maxLevel: 13.35,
     leftBank: 13.35,
     rightBank: 13.37,
-    flowRate: 392.0, // m³/s
+    flowRate: 420.00, // m³/s
     bm: 289.145,
     status: "normal",
     lastUpdated: new Date(),
@@ -193,13 +193,13 @@ export default function WaterDashboard() {
           const apiData = await fetchStationData(station.id)
           if (apiData) {
             const newLevel = apiData.currentLevel
-            const newFlowRate = apiData.flowRate
+            //const newFlowRate = apiData.flowRate
             const previousLevel = station.currentLevel
 
             return {
               ...station,
               currentLevel: newLevel,
-              flowRate: newFlowRate,
+              //flowRate: newFlowRate,
               lastUpdated: apiData.lastUpdated,
               status: determineStatus(newLevel, station.normalLevel, station.maxLevel),
               trend: determineTrend(newLevel, previousLevel),
@@ -358,7 +358,7 @@ export default function WaterDashboard() {
                           <Waves className="h-4 w-4 text-blue-500" />
                           <span className="text-xs font-medium">อัตราการไหล</span>
                         </div>
-                        <div className="text-xl font-bold text-blue-600">{station.flowRate.toFixed(1)}</div>
+                        <div className="text-xl font-bold text-blue-600">{station.flowRate.toFixed(2)}</div>
                         <div className="text-xs text-muted-foreground">ลบ.ม./วิ</div>
                       </div>
                     </div>
