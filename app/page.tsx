@@ -66,7 +66,7 @@ const fetchStationData = async (stationId: number) => {
 const initialStations = [
   {
     id: 1,
-    code_id: "P67",
+    code_id: "P.67",
     name: "P.67 - สะพานแม่แฝก",
     location_name_TH: "สะพานแม่แฝก 	บ้านแม่แต ต.แม่แฝกเก่า อ.สันทราย จ.เชียงใหม่",
     location_name_Eng: "Mae Faek Bridge, Ban Mae Tae, Mae Faek Kao, San Sai, Chiang Mai",
@@ -86,7 +86,7 @@ const initialStations = [
   },
   {
     id: 2,
-    code_id: "P103",
+    code_id: "P.103",
     name: "P.103 - สะพานป่าข่อยใต้",
     location_name_TH: "สะพานป่าข่อยใต้ ต.สันผีเสื้อ อ.เมือง จ.เชียงใหม่",
     location_name_Eng: "Pa Koi Bridge, San Phi Suea, Muang, Chiang Mai",
@@ -106,7 +106,7 @@ const initialStations = [
   },
   {
     id: 3,
-    code_id: "P1",
+    code_id: "P.1",
     name: "P.1 - สะพานนวรัฐ",
     location_name_TH: "สะพานนวรัฐ ต.วัดเกตุ อ.เมือง จ.เชียงใหม่",
     location_name_Eng: "Nawarat Bridge, Wat Ket, Muang, Chiang Mai",
@@ -126,17 +126,17 @@ const initialStations = [
   },
   {
     id: 4,
-    code_id: "FB2",
-    name: "FB.2 - สะพานเม็งราย",
+    code_id: "FBP.2",
+    name: "FBP.2 - สะพานเม็งราย",
     location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
     location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
     location: { lat: 18.766187, lng: 99.003291 },
     currentLevel: 8.85,
     normalLevel: 9.0,
-    maxLevel: 9.5,
+    maxLevel: 9,
     leftBank: 9.7,
     rightBank: 9.8,
-    flowRate: 0.0, // m³/s
+    flowRate: 393.0, // m³/s
     bm: 294.97,
     status: "normal",
     lastUpdated: new Date(),
@@ -146,18 +146,18 @@ const initialStations = [
   },
   {
     id: 5,
-    code_id: "FB3",
-    name: "FB.3 - สะพานวัดเกาะกลาง",
+    code_id: "FBP.3",
+    name: "FBP.3 - สะพานวัดเกาะกลาง",
     location_name_TH: "สะพานวัดเกาะกลาง ต.ป่าแดด อ.เมือง จ.เชียงใหม่",
     location_name_Eng: "Wat Ko Klang Bridge, Pa Daet, Muang, Chiang Mai",
     location: { lat: 18.741756, lng: 98.983531 },
     currentLevel: 6.2,
     normalLevel: 13.0,
-    maxLevel: 12.5,
+    maxLevel: 13.35,
     leftBank: 13.35,
     rightBank: 13.37,
-    flowRate: 0.0, // m³/s
-    bm: 280,
+    flowRate: 392.0, // m³/s
+    bm: 289.145,
     status: "normal",
     lastUpdated: new Date(),
     trend: "up",
@@ -173,7 +173,7 @@ export default function WaterDashboard() {
   const [isLoading, setIsLoading] = useState(false)
 
   const determineStatus = (currentLevel: number, normalLevel: number, maxLevel: number) => {
-    if (currentLevel >= maxLevel * 0.9) return "high"
+    if (currentLevel >= maxLevel * 0.95) return "high"
     if (currentLevel <= normalLevel * 0.2) return "low"
     return "normal"
   }
@@ -334,7 +334,7 @@ export default function WaterDashboard() {
                       )} */}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
-                      อัปเดต: {station.lastUpdated.toLocaleTimeString("th-TH")}
+                      อัปเดต: 27 ก.ย. 68 เวลา {station.lastUpdated.toLocaleTimeString("th-TH")}
                     </p>
                   </div>
                   {getTrendIcon(station.trend)}
@@ -350,8 +350,8 @@ export default function WaterDashboard() {
                           <Droplets className="h-4 w-4 text-primary" />
                           <span className="text-xs font-medium">ระดับน้ำ</span>
                         </div>
-                        <div className="text-xl font-bold text-primary">{station.currentLevel.toFixed(2)}</div>
-                        <div className="text-xs text-muted-foreground">เมตร</div>
+                        <div className="text-xl font-bold text-primary">{station.currentLevel.toFixed(2)} ({(station.currentLevel+station.bm).toFixed(2)})</div>
+                        <div className="text-xs text-muted-foreground">เมตร (ม.รทก.)</div>
                       </div>
                       <div className="text-center p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center justify-center gap-1 mb-1">

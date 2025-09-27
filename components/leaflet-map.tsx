@@ -123,7 +123,6 @@ export default function LeafletMap({ stations, selectedStation, onStationSelect 
                     align-items: flex-end;
                     justify-content: center;
                     color: rgba(255, 255, 255);
-                    font-weight: bold;
                     font-size: 10px;
                     text-shadow: 0 1px 2px rgba(0,0,0,0.8);
                   ">

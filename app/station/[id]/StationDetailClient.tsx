@@ -75,7 +75,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     const initialStations = [
         {
             id: 1,
-            code_id: "P67",
+            code_id: "P.67",
             name: "P.67 - สะพานแม่แฝก",
             location_name_TH: "สะพานแม่แฝก 	บ้านแม่แต ต.แม่แฝกเก่า อ.สันทราย จ.เชียงใหม่",
             location_name_Eng: "Mae Faek Bridge, Ban Mae Tae, Mae Faek Kao, San Sai, Chiang Mai",
@@ -95,7 +95,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         },
         {
             id: 2,
-            code_id: "P103",
+            code_id: "P.103",
             name: "P.103 - สะพานป่าข่อยใต้",
             location_name_TH: "สะพานป่าข่อยใต้ ต.สันผีเสื้อ อ.เมือง จ.เชียงใหม่",
             location_name_Eng: "Pa Koi Bridge, San Phi Suea, Muang, Chiang Mai",
@@ -115,7 +115,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         },
         {
             id: 3,
-            code_id: "P1",
+            code_id: "P.1",
             name: "P.1 - สะพานนวรัฐ",
             location_name_TH: "สะพานนวรัฐ ต.วัดเกตุ อ.เมือง จ.เชียงใหม่",
             location_name_Eng: "Nawarat Bridge, Wat Ket, Muang, Chiang Mai",
@@ -135,8 +135,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         },
         {
             id: 4,
-            code_id: "FB2",
-            name: "FB.2 - สะพานเม็งราย",
+            code_id: "FBP.2",
+            name: "FBP.2 - สะพานเม็งราย",
             location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
             location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
             location: { lat: 18.766187, lng: 99.003291 },
@@ -145,7 +145,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             maxLevel: 9.5,
             leftBank: 9.7,
             rightBank: 9.8,
-            flowRate: 0.0, // m³/s
+            flowRate: 393.0,
             bm: 294.2,
             status: "normal",
             lastUpdated: new Date(),
@@ -155,8 +155,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         },
         {
             id: 5,
-            code_id: "FB3",
-            name: "FB.3 - สะพานวัดเกาะกลาง",
+            code_id: "FBP.3",
+            name: "FBP.3 - สะพานวัดเกาะกลาง",
             location_name_TH: "สะพานวัดเกาะกลาง ต.ป่าแดด อ.เมือง จ.เชียงใหม่",
             location_name_Eng: "Wat Ko Klang Bridge, Pa Daet, Muang, Chiang Mai",
             location: { lat: 18.741756, lng: 98.983531 },
@@ -165,8 +165,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
             maxLevel: 12.5,
             leftBank: 13.35,
             rightBank: 13.37,
-            flowRate: 0.0, // m³/s
-            bm: 280,
+            flowRate: 392.0,
+            bm: 289.145,
             status: "normal",
             lastUpdated: new Date(),
             trend: "up",
@@ -371,8 +371,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                 <option value="1">P.67 - สะพานแม่แฝก</option>
                                 <option value="2">P.103 - สะพานป่าข่อยใต้</option>
                                 <option value="3">P.1 - สะพานนวรัฐ</option>
-                                <option value="4">FB.2 - สะพานเม็งราย</option>
-                                <option value="5">FB.3 - สะพานวัดเกาะกลาง</option>
+                                <option value="4">FBP.2 - สะพานเม็งราย</option>
+                                <option value="5">FBP.3 - สะพานวัดเกาะกลาง</option>
                             </select>
                         </div>
                     </div>
