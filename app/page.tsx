@@ -131,12 +131,12 @@ const initialStations = [
     location_name_TH: "สะพานเม็งรายอนุสรณ์ ต.วัดเกต อ.เมือง จ.เชียงใหม่",
     location_name_Eng: "Mengrai Anuson bridge, Wat Ket, Muang, Chiang Mai",
     location: { lat: 18.766187, lng: 99.003291 },
-    currentLevel: 8.85,
+    currentLevel: 9.80,
     normalLevel: 9.0,
     maxLevel: 9,
     leftBank: 9.7,
     rightBank: 9.8,
-    flowRate: 425.00, // m³/s
+    flowRate: 445.00, // m³/s
     bm: 294.97,
     status: "normal",
     lastUpdated: new Date(),
@@ -156,7 +156,7 @@ const initialStations = [
     maxLevel: 13.35,
     leftBank: 13.35,
     rightBank: 13.37,
-    flowRate: 420.00, // m³/s
+    flowRate: 440.00, // m³/s
     bm: 289.145,
     status: "normal",
     lastUpdated: new Date(),
@@ -334,7 +334,7 @@ export default function WaterDashboard() {
                       )} */}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
-                      อัปเดต: 27 ก.ย. 68 เวลา {station.lastUpdated.toLocaleTimeString("th-TH")}
+                      อัปเดต: 27 ก.ย. 68 เวลา 22:00:00
                     </p>
                   </div>
                   {getTrendIcon(station.trend)}

@@ -36,8 +36,8 @@ export default function WaterCrossSection({
     const chartHeight = "80%"
 
     const containerHeight = 210 // Fixed height for calculations
-    const waterLevelPercent = Math.min(100, (currentLevel / (rightBank * 1.4)) * 100)
-    const maxLevelPercent = Math.min(100, (maxLevel / (rightBank * 1.4)) * 100)
+    const waterLevelPercent = Math.min(100, (currentLevel / (rightBank * 1.34)) * 100)
+    const maxLevelPercent = Math.min(100, (maxLevel / (rightBank *1.34)) * 100)
     const rightBankPercent = Math.min(100, (rightBank / (rightBank * 1.1)) * 100)
     const leftBankPercent = Math.min(100, (leftBank / (leftBank * 1.1)) * 100)
     
@@ -62,14 +62,14 @@ export default function WaterCrossSection({
             />
 
             <div
-                className="absolute left-0 right-0 border-t-2 border-red-500 border-dashed"
+                className="absolute left-5 right-5 border-t-2 border-red-500 border-dashed"
                 style={{ bottom: `${maxLevelPercent}%` }}
             />
 
             <div
                 className="absolute left-0 text-[10px] text-white px-2 py-1 rounded z-20"
                 //className="absolute right-1 text-black px-2 py-1 rounded text-xs font-bold z-20"
-                style={{ bottom: `${maxLevelPercent - 5}%`, transform: "translateY(50%)" }}
+                style={{ bottom: `${maxLevelPercent - 8}%`, transform: "translateY(50%)" }}
             >
                 ระดับวิกฤติ {maxLevel.toFixed(2)} ม. <p>( {(bm+maxLevel).toFixed(2)} ม.รทก.)</p>
             </div> 
