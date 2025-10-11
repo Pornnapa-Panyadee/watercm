@@ -67,16 +67,16 @@ export default function WaterCrossSection({
             />
 
             <div
-                className="absolute left-0 text-[10px] text-white px-2 py-1 rounded z-20"
+                className="absolute right-0 text-[10px] text-white px-2 py-1 rounded z-20"
                 //className="absolute right-1 text-black px-2 py-1 rounded text-xs font-bold z-20"
-                style={{ bottom: `${maxLevelPercent - 8}%`, transform: "translateY(50%)" }}
+                style={{ bottom: `10px`, transform: "translateY(50%)" }}
             >
-                ระดับวิกฤติ {maxLevel.toFixed(2)} ม. <p>( {(bm+maxLevel).toFixed(2)} ม.รทก.)</p>
+                ระดับวิกฤติ {maxLevel.toFixed(2)} ม. ( {(bm+maxLevel).toFixed(2)} ม.รทก.)
             </div> 
             
 
             <div
-                className="absolute right-2 text-black px-2 py-1 rounded text-xs z-20"
+                className="absolute right-2 text-[10px] text-black px-2 py-1 rounded text-xs z-20"
                 //className="absolute right-1 text-black px-2 py-1 rounded text-xs font-bold z-20"
                 style={{ bottom: `${rightBankPercent }%`, transform: "translateY(50%)" }}
             >
@@ -85,7 +85,7 @@ export default function WaterCrossSection({
             </div> 
 
             <div
-                className="absolute left-2 text-black px-1 py-1 rounded text-xs z-20"
+                className="absolute left-2 text-[10px] text-black px-1 py-1 rounded text-xs z-20"
                 style={{ bottom: `${leftBankPercent}%`, transform: "translateY(50%)" }}
             >
                 ตลิ่งซ้าย {leftBank.toFixed(2)} ม.  <p>( {(bm+leftBank).toFixed(2)} ม.รทก.)</p>
@@ -94,8 +94,8 @@ export default function WaterCrossSection({
 
 
             <div
-                className="absolute left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold flex flex-col items-center justify-center text-center"
-                style={{ bottom: `${waterLevelPercent - 25}%` }}
+                className="absolute left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-2 py-1 rounded text-xs flex flex-col items-center justify-center text-center"
+                style={{ bottom: `${waterLevelPercent+2}%` }}
             >
                 ระดับน้ำ {currentLevel.toFixed(2)} ม. <p>( {(bm+currentLevel).toFixed(2)} ม.รทก.)</p>
             </div>

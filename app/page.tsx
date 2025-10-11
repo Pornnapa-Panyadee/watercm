@@ -29,7 +29,7 @@ const generateHistoricalData = (currentLevel: number, normalLevel: number) => {
     })
   }
 
-  return data
+ return data
 }
 
 
@@ -47,7 +47,7 @@ const fetchStationData = async (stationId: number) => {
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
 
     const data = await response.json()
-    console.log(`[v0] API data for station ${stationId}:`, data)
+    // console.log(`[v0] API data for station ${stationId}:`, data)
 
     return {
       currentLevel: data.value?.water_level || 0,
@@ -57,7 +57,7 @@ const fetchStationData = async (stationId: number) => {
       // Add more fields as needed based on API response structure
     }
   } catch (error) {
-    console.error(`[v0] Error fetching data for station ${stationId}:`, error)
+    // console.error(`[v0] Error fetching data for station ${stationId}:`, error)
     return null
   }
 }
@@ -152,8 +152,8 @@ const initialStations = [
     location_name_Eng: "Wat Ko Klang Bridge, Pa Daet, Muang, Chiang Mai",
     location: { lat: 18.741756, lng: 98.983531 },
     currentLevel: 6.2,
-    normalLevel: 13.0,
-    maxLevel: 13.35,
+    normalLevel: 12.0,
+    maxLevel: 13.00,
     leftBank: 13.35,
     rightBank: 13.37,
     flowRate: 440.00, // m³/s
@@ -291,10 +291,11 @@ export default function WaterDashboard() {
                 {/* <p className="text-sm text-muted-foreground">อัปเดตล่าสุด: {lastRefresh.toLocaleTimeString("th-TH")}</p> */}
               </div>
             </div>
-            <Button onClick={refreshData} variant="outline" size="sm" disabled={isLoading}>
+            {/* <Button onClick={refreshData} variant="outline" size="sm" disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               {isLoading ? "กำลังโหลด..." : "รีเฟรช"}
             </Button>
+            */}
           </div>
         </div>
       </header>
@@ -334,7 +335,10 @@ export default function WaterDashboard() {
                       )} */}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
-                      อัปเดต: 27 ก.ย. 68 เวลา 22:00:00
+                      อัปเดต: {station.lastUpdated.toLocaleString("th-TH", {
+                              dateStyle: "medium",
+                              timeStyle: "medium"
+                            })}
                     </p>
                   </div>
                   {getTrendIcon(station.trend)}

@@ -18,6 +18,9 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     const router = useRouter()
     const numericId = Number.parseInt(stationId)
     const [selectedStation, setSelectedStation] = useState<number | null>(null)
+    const SUPABASE_URL = "https://uhsmuwbmimfkffkobunm.supabase.co"
+    const SUPABASE_API = `${SUPABASE_URL}/rest/v1/water_levels`
+    const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
     // ===== Helpers =====
     const generateHistoricalData = (currentLevel: number, normalLevel: number) => {
@@ -40,8 +43,10 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         1: null,
         2: null,
         3: null,
-        4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022",
-        5: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021",
+        4: `${SUPABASE_API}?station_id=eq.22&order=created_at.desc&limit=1`,
+        5: `${SUPABASE_API}?station_id=eq.21&order=created_at.desc&limit=1`
+        // 4: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy022",
+        // 5: "https://www.cmuccdc.org/api/ccdc/floodboy/Floodboy021",
     }
 
 
@@ -52,6 +57,45 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         4: "/images/stations/f22.jpg",
         5: "/images/stations/F21.jpg",
     }
+
+    const fetchStationHistory = async (stationId: number) => {
+    try {
+        const since = new Date(Date.now() - 168 * 60 * 60 * 1000).toISOString()
+        const url = `${SUPABASE_API}?station_id=eq.${stationId}&log_datetime=gte.${since}&order=log_datetime.asc`
+
+        const response = await fetch(url, {
+        headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        })
+
+        if (!response.ok) throw new Error(`Supabase error: ${response.status}`)
+        const data = await response.json()
+
+        // ❌ ไม่ต้องบวก 7 ชั่วโมง — JS จะตีความเป็นเวลาท้องถิ่นอยู่แล้ว
+        return data.map((row: any) => {
+        const utcDate = new Date(row.log_datetime)
+            const utcString = utcDate.toLocaleString("th-TH", {
+                timeZone: "UTC", // ✅ บังคับไม่บวกเวลาไทย
+                day: "2-digit",
+                month: "short",
+                hour: "2-digit",
+                minute: "2-digit",
+            })
+            return {
+                time: utcString,
+                level: row.water_level,
+                timestamp: utcDate,
+            }
+        })
+    } catch (err) {
+        console.error("Error fetching historical data:", err)
+        return []
+    }
+    }
+
+
 
     const fetchStationData = async (stationId: number) => {
         try {
@@ -248,6 +292,8 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
         if (!station) return
         setIsLoading(true)
         if (station.hasAPI) {
+            
+
             const apiData = await fetchStationData(station.id)
             if (apiData) {
                 const newLevel = apiData.currentLevel
@@ -290,11 +336,33 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
     }, [])
 
     useEffect(() => {
+        
         if (station) {
             const interval = setInterval(refreshData, 2 * 60 * 1000)
             return () => clearInterval(interval)
         }
+
     }, [refreshData, station])
+
+    useEffect(() => {
+        if (!station) return
+
+        // mapping สถานีในระบบคุณ -> station_id ในตาราง water_levels
+        const stationMap: Record<number, number> = {
+            4: 22, // FBP.2 = station_id 22
+            5: 21, // FBP.3 = station_id 21
+        }
+
+        const mappedId = stationMap[station.id]
+        if (!mappedId) return // ถ้าไม่อยู่ใน mapping ก็ข้ามไป
+
+        ;(async () => {
+            const history = await fetchStationHistory(mappedId)
+            setStation((prev) =>
+            prev ? { ...prev, historicalData: history } : prev
+            )
+        })()
+        }, [])
 
     // ===== UI =====
     if (!station) {
@@ -451,6 +519,10 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                         <span>ตลิ่งขวา:</span>
                                         <span className="font-medium">{station.rightBank.toFixed(2)} ม. ({(station.rightBank+station.bm ).toFixed(2)} ม.รทก.) </span>
                                     </div>
+                                    <div className="flex justify-between">
+                                        <span>อัปเดต:</span>
+                                        <span className="font-medium">{station.lastUpdated.toLocaleString("th-TH", {dateStyle: "medium",timeStyle: "medium"                            })} </span>
+                                    </div>
                                 </div>
 
                             </CardContent>
@@ -482,7 +554,7 @@ export default function StationDetailClient({ stationId }: StationDetailClientPr
                                 </div>
                             </CardContent>
                         </Card>
-                    </div>
+                    </div> 
 
                 </div>
 
