@@ -67,10 +67,12 @@ export default function CnxTif() {
         [bbox[1], bbox[0]],
         [bbox[3], bbox[2]],
       ]
-      L.imageOverlay(canvas.toDataURL(), bounds).addTo(map)
+      L.imageOverlay(canvas.toDataURL(), bounds, { opacity: 0.7 }).addTo(map)
 
       // ✅ เพิ่ม legend ด้านล่างขวา
-      const legend = L.control({ position: "bottomright" })
+      const L_any = L as any
+      const legend = L_any.control({ position: "bottomright" })
+      // const legend = L.control({ position: "bottomright" })
       legend.onAdd = function () {
         const div = L.DomUtil.create(
           "div",
