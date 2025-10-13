@@ -108,14 +108,20 @@ export default function CnxTif() {
       map.on("click", async (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng
 
-        // แปลงพิกัดแผนที่เป็นพิกัด pixel
         const x = Math.floor(((lng - minX) / (maxX - minX)) * width)
         const y = Math.floor((1 - (lat - minY) / (maxY - minY)) * height)
 
         if (x < 0 || y < 0 || x >= width || y >= height) return
 
         const pixel = await image.readRasters({ window: [x, y, x + 1, y + 1] })
-        const val = pixel[0][0]
+        const band = pixel[0]
+
+        let val: number | undefined = undefined
+        if (ArrayBuffer.isView(band)) {
+          val = (band as any)[0]
+        } else if (typeof band === "number") {
+          val = band
+        }
 
         if (val !== undefined && !isNaN(val)) {
           L.popup()
