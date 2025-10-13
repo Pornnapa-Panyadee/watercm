@@ -8,6 +8,8 @@ import { Droplets, MapPin, RefreshCw, TrendingUp, TrendingDown, Minus, Waves } f
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts"
 import LeafletMap from "@/components/leaflet-map"
 import WaterCrossSection from "@/components/water-cross-section"
+import { useRouter } from "next/navigation"
+
 
 const generateHistoricalData = (currentLevel: number, normalLevel: number) => {
   const data = []
@@ -278,6 +280,7 @@ export default function WaterDashboard() {
     }
   }
 
+  const router = useRouter()
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -288,14 +291,13 @@ export default function WaterDashboard() {
               <Droplets className="h-8 w-8 text-primary" />
               <div>
                 <h1 className="text-2xl font-bold text-foreground">ระบบติดตามระดับน้ำ</h1>
-                {/* <p className="text-sm text-muted-foreground">อัปเดตล่าสุด: {lastRefresh.toLocaleTimeString("th-TH")}</p> */}
+                <p className="text-sm text-muted-foreground">อัปเดตล่าสุด: {lastRefresh.toLocaleTimeString("th-TH")}</p>
               </div>
             </div>
-            {/* <Button onClick={refreshData} variant="outline" size="sm" disabled={isLoading}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-              {isLoading ? "กำลังโหลด..." : "รีเฟรช"}
+            <Button onClick={() => router.push("/map")} variant="outline"size="sm">
+              <MapPin className="h-4 w-4 mr-2" /> ไปที่แผนที่
             </Button>
-            */}
+           
           </div>
         </div>
       </header>
