@@ -9,96 +9,173 @@ export default function CnxTif() {
 
   useEffect(() => {
     async function initMap() {
-      // ✅ ป้องกันสร้างซ้ำ
       if (mapRef.current) {
         mapRef.current.remove()
         mapRef.current = null
       }
 
       const L = (await import("leaflet")).default
-      const plotty = await import("plotty")
 
-      const map = L.map("map").setView([18.69, 98.98], 12)
+      // 🗺️ สร้างแผนที่และตั้งค่าศูนย์กลาง
+      const map = L.map("map", { center: [18.69, 98.98], zoom: 11 })
       mapRef.current = map
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 15,
-        attribution: "&copy; OpenStreetMap contributors",
-      }).addTo(map)
+      // 🛰️ Google Satellite
+      const googleSat = L.tileLayer(
+        "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&key=YOUR_API_KEY",
+        {
+          maxZoom: 20,
+          attribution: "&copy; Google Satellite",
+        }
+      )
+
+      // 🏔️ Google Terrain
+      const googleTerrain = L.tileLayer(
+        "https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&key=YOUR_API_KEY",
+        {
+          maxZoom: 20,
+          attribution: "&copy; Google Terrain",
+        }
+      )
+
+      // 🌫️ None (transparent basemap)
+      const noBase = L.tileLayer("", {})
+      
+
+      // ค่าเริ่มต้นเป็น Satellite
+      googleSat.addTo(map)
 
       // ✅ โหลด GeoTIFF
       const tiff = await fromUrl("/data/cnxlpn_color.tif")
       const image = await tiff.getImage()
       const rasters = await image.readRasters()
-      const values = rasters[0]
+      const data = rasters[0]
       const width = image.getWidth()
       const height = image.getHeight()
-      const [minX, minY, maxX, maxY] = image.getBoundingBox()
+      const bbox = image.getBoundingBox()
+      const [minX, minY, maxX, maxY] = bbox
 
-      // ✅ คำนวณ min/max แบบปลอดภัย
-      let minVal = Infinity
-      let maxVal = -Infinity
-      if (ArrayBuffer.isView(values)) {
-        for (let i = 0; i < values.length; i++) {
-          const v = values[i]
-          if (v < minVal) minVal = v
-          if (v > maxVal) maxVal = v
+      // ✅ คำนวณ min/max
+      let min = Infinity
+      let max = -Infinity
+      if (ArrayBuffer.isView(data)) {
+        for (let i = 0; i < data.length; i++) {
+          const v = data[i]
+          if (v !== -9999 && v !== 0 && !isNaN(v)) {
+            if (v < min) min = v
+            if (v > max) max = v
+          }
         }
-      } else if (typeof values === "number") {
-        minVal = maxVal = values
+      } else if (typeof data === "number") {
+        const v = data
+        if (v !== -9999 && v !== 0 && !isNaN(v)) {
+          min = v
+          max = v
+        }
       }
 
-      // ✅ plot raster ด้วย plotty
+      // ✅ สร้าง Canvas
       const canvas = document.createElement("canvas")
-      const Plot = (plotty as any).plot || (plotty as any).default?.plot
-      const plot = new Plot({
-        canvas,
-        data: values,
-        width,
-        height,
-        domain: [minVal, maxVal],
-        colorScale: "viridis",
-      })
-      plot.render()
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext("2d")!
+      const imageData = ctx.createImageData(width, height)
 
-      // ✅ overlay raster บนแผนที่
-      const bbox = image.getBoundingBox()
+      // 🎨 gradient: ฟ้าอ่อน → ฟ้า → น้ำเงิน → น้ำเงินเข้ม
+      const getColor = (normalized: number): [number, number, number] => {
+        if (normalized < 0.33) {
+          const t = normalized / 0.33
+          const r = Math.floor(168 * (1 - t) + 51 * t)
+          const g = Math.floor(216 * (1 - t) + 153 * t)
+          const b = Math.floor(255 * (1 - t) + 255 * t)
+          return [r, g, b]
+        } else if (normalized < 0.66) {
+          const t = (normalized - 0.33) / 0.33
+          const r = Math.floor(51 * (1 - t) + 0 * t)
+          const g = Math.floor(153 * (1 - t) + 68 * t)
+          const b = Math.floor(255 * (1 - t) + 204 * t)
+          return [r, g, b]
+        } else {
+          // For normalized >= 0.66
+          const t = (normalized - 0.66) / 0.34
+          const r = Math.floor(0 * (1 - t) + 0 * t)
+          const g = Math.floor(68 * (1 - t) + 17 * t)
+          const b = Math.floor(204 * (1 - t) + 51 * t)
+          return [r, g, b]
+        }
+      }
+      // ✅ Render pixel สี
+      if (ArrayBuffer.isView(data)) {
+        for (let i = 0; i < data.length; i++) {
+          const value = data[i]
+          const pixelIndex = i * 4
+
+          if (value === -9999 || value === 0 || isNaN(value)) {
+            imageData.data[pixelIndex + 3] = 0
+          } else {
+            const normalized = (value - min) / (max - min)
+            const [r, g, b] = getColor(normalized)
+            imageData.data[pixelIndex] = r
+            imageData.data[pixelIndex + 1] = g
+            imageData.data[pixelIndex + 2] = b
+            imageData.data[pixelIndex + 3] = 220
+          }
+        }
+      } else if (typeof data === "number") {
+        // Single value case
+        const value = data
+        const pixelIndex = 0
+        if (value === -9999 || value === 0 || isNaN(value)) {
+          imageData.data[pixelIndex + 3] = 0
+        } else {
+          const normalized = (value - min) / (max - min)
+          const [r, g, b] = getColor(normalized)
+          imageData.data[pixelIndex] = r
+          imageData.data[pixelIndex + 1] = g
+          imageData.data[pixelIndex + 2] = b
+          imageData.data[pixelIndex + 3] = 220
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0)
+
+      // ✅ Overlay Raster
       const bounds: L.LatLngBoundsExpression = [
         [bbox[1], bbox[0]],
         [bbox[3], bbox[2]],
       ]
-      L.imageOverlay(canvas.toDataURL(), bounds, { opacity: 0.7 }).addTo(map)
+      const rasterLayer = L.imageOverlay(canvas.toDataURL(), bounds, { opacity: 1 })
+      rasterLayer.addTo(map)
 
-      // ✅ เพิ่ม legend ด้านล่างขวา
+      // ✅ Layer Control
+      const baseLayers = {
+        "🛰️ Google Satellite": googleSat,
+        "🏔️ Google Terrain": googleTerrain,
+      }
+      const overlays = { "📈 Raster Layer": rasterLayer }
+      L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map)
+
+      // ✅ Legend
       const L_any = L as any
       const legend = L_any.control({ position: "bottomright" })
-      // const legend = L.control({ position: "bottomright" })
       legend.onAdd = function () {
-        const div = L.DomUtil.create(
-          "div",
-          "info legend bg-white p-2 rounded shadow"
-        )
+        const div = L.DomUtil.create("div", "info legend bg-white p-2 rounded shadow")
         const legendCanvas = document.createElement("canvas")
         legendCanvas.width = 120
         legendCanvas.height = 12
-
-        // ✅ ใช้ color scale เดียวกันกับ raster
-        const LegendPlot = new Plot({
-          canvas: legendCanvas,
-          data: new Float32Array(
-            Array.from({ length: 120 }, (_, i) => minVal + (i / 120) * (maxVal - minVal))
-          ),
-          width: 120,
-          height: 1,
-          domain: [minVal, maxVal],
-          colorScale: "viridis",
-        })
-        LegendPlot.render()
+        const lctx = legendCanvas.getContext("2d")!
+        const grad = lctx.createLinearGradient(0, 0, 120, 0)
+        grad.addColorStop(0, "#A8D8FF")
+        grad.addColorStop(0.33, "#3399FF")
+        grad.addColorStop(0.66, "#0044CC")
+        grad.addColorStop(1, "#001133")
+        lctx.fillStyle = grad
+        lctx.fillRect(0, 0, 120, 12)
 
         div.innerHTML = `
           <b>ระดับน้ำ (ซม.)</b><br/>
-          <img src="${legendCanvas.toDataURL()}" width="120" height="20"/><br/>
-          <span style="font-size:10px">${minVal.toFixed(2)} → ${maxVal.toFixed(2)}</span>
+          <img src="${legendCanvas.toDataURL()}" width="120" height="12"/><br/>
+          <span style="font-size:10px">${min.toFixed(2)} → ${max.toFixed(2)}</span>
         `
         return div
       }
@@ -107,23 +184,14 @@ export default function CnxTif() {
       // ✅ แสดงค่าพิกเซลเมื่อคลิก
       map.on("click", async (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng
-
         const x = Math.floor(((lng - minX) / (maxX - minX)) * width)
         const y = Math.floor((1 - (lat - minY) / (maxY - minY)) * height)
-
         if (x < 0 || y < 0 || x >= width || y >= height) return
 
         const pixel = await image.readRasters({ window: [x, y, x + 1, y + 1] })
-        const band = pixel[0]
+        const val = ArrayBuffer.isView(pixel[0]) ? pixel[0][0] : pixel[0]
 
-        let val: number | undefined = undefined
-        if (ArrayBuffer.isView(band)) {
-          val = (band as any)[0]
-        } else if (typeof band === "number") {
-          val = band
-        }
-
-        if (val !== undefined && !isNaN(val)) {
+        if (val !== undefined && !isNaN(val) && val !== -9999 && val !== 0) {
           L.popup()
             .setLatLng(e.latlng)
             .setContent(`ค่าระดับน้ำ: <b>${val.toFixed(2)}</b> ซม.`)
@@ -134,7 +202,6 @@ export default function CnxTif() {
 
     initMap()
 
-    // ✅ cleanup
     return () => {
       if (mapRef.current) {
         mapRef.current.remove()
