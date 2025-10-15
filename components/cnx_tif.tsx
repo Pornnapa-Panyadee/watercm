@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import "leaflet/dist/leaflet.css"
 import { fromUrl } from "geotiff"
+import { fromArrayBuffer } from "geotiff"
 
 export default function CnxTif() {
   const mapRef = useRef<L.Map | null>(null)
@@ -45,15 +46,29 @@ export default function CnxTif() {
       // ค่าเริ่มต้นเป็น Satellite
       googleSat.addTo(map)
 
-      // ✅ โหลด GeoTIFF
-      const tiff = await fromUrl("/data/cnxlpn_color.tif")
-      const image = await tiff.getImage()
-      const rasters = await image.readRasters()
-      const data = rasters[0]
-      const width = image.getWidth()
-      const height = image.getHeight()
-      const bbox = image.getBoundingBox()
-      const [minX, minY, maxX, maxY] = bbox
+      // ✅ โหลด GeoTIFF (เวอร์ชันใหม่: ปลอดภัยและรองรับมือถือ)
+      let data, width, height, bbox, minX, minY, maxX, maxY, image
+
+      try {
+        const response = await fetch("/data/cnxlpn_color.tif")
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+        const arrayBuffer = await response.arrayBuffer()
+        const tiff = await fromArrayBuffer(arrayBuffer)
+        image = await tiff.getImage()
+        const rasters = await image.readRasters()
+        data = rasters[0]
+        width = image.getWidth()
+        height = image.getHeight()
+        bbox = image.getBoundingBox()
+        ;[minX, minY, maxX, maxY] = bbox
+
+        console.log("✅ GeoTIFF loaded successfully:", { width, height })
+      } catch (error) {
+        console.error("❌ GeoTIFF load error:", error)
+        alert("ไม่สามารถโหลดแผนที่ GeoTIFF ได้ กรุณารีเฟรชหรือใช้คอมพิวเตอร์แทน")
+        return // หยุดทำงาน ถ้าโหลดไม่ได้
+      }
 
       // ✅ คำนวณ min/max
       let min = Infinity
