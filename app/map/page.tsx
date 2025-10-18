@@ -64,7 +64,6 @@ export default function WaterDashboard() {
                 <ul className="list-disc list-inside space-y-2 text-sm text-gray-700">
                   <li>คลิกที่จุดใดก็ได้บนแผนที่</li>
                   <li>ดูค่าระดับน้ำที่จุดนั้น</li>
-                  <li>พื้นที่โปร่งใสคือพื้นที่ไม่มีข้อมูล</li>
                   <li>ซูมและเลื่อนแผนที่ได้ตามต้องการ</li>
                 </ul>
               </CardContent>
