@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import "leaflet/dist/leaflet.css"
 import { fromArrayBuffer } from "geotiff"
+import { kml } from "togeojson"
 
 type TypedArray =
   | Int8Array
@@ -27,7 +28,7 @@ export default function CnxTif() {
       const L = (await import("leaflet")).default
 
       // 🗺️ แผนที่พื้นหลัง
-      const map = L.map("map", { center: [18.69, 98.98], zoom: 11 })
+      const map = L.map("map", { center: [18.75, 98.99], zoom: 12 })
       mapRef.current = map
 
       const googleSat = L.tileLayer(
@@ -40,7 +41,56 @@ export default function CnxTif() {
         { maxZoom: 20, attribution: "&copy; Google Terrain" }
       )
 
-      googleSat.addTo(map)
+      const darkBase = L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        {
+          maxZoom: 20,
+          attribution:
+            "&copy; <a href='https://carto.com/attributions'>CARTO</a> | Dark Matter",
+        }
+      )
+
+      googleTerrain.addTo(map)
+
+      // --------------------------------------------------
+      // ✅ โหลดไฟล์ KML เส้นทางน้ำ Ping.kml
+      // --------------------------------------------------
+      let pingRiver: L.GeoJSON | null = null
+      let roadLayer: L.GeoJSON | null = null
+
+      try {
+        const pingResponse = await fetch("/data/KML/stream.kml")
+        if (!pingResponse.ok) throw new Error(`HTTP ${pingResponse.status}`)
+        const pingText = await pingResponse.text()
+
+        const parser = new DOMParser()
+        const xml = parser.parseFromString(pingText, "text/xml")
+        const geojson = kml(xml)
+
+        pingRiver = L.geoJSON(geojson, {
+          style: { color: "#ffffffff", weight: 1, opacity: 0.9 },
+        }).addTo(map)
+      } catch (err) {
+        console.error("❌ โหลด Ping.kml ไม่สำเร็จ:", err)
+      }
+
+      try {
+        const roadResponse = await fetch("/data/KML/road.kml")
+        if (!roadResponse.ok) throw new Error(`HTTP ${roadResponse.status}`)
+        const roadText = await roadResponse.text()
+
+        const parser = new DOMParser()
+        const xml = parser.parseFromString(roadText, "text/xml")
+        const geojson = kml(xml)
+
+        roadLayer = L.geoJSON(geojson, {
+          style: { color: "#ffffffff", weight: 1, opacity: 0.9 },
+        }).addTo(map)
+      } catch (err) {
+        console.error("❌ โหลด Road.kml ไม่สำเร็จ:", err)
+      }
+
+
 
       // --------------------------------------------------
       // ✅ ฟังก์ชันโหลดและสร้าง layer จาก GeoTIFF
@@ -116,7 +166,7 @@ export default function CnxTif() {
               imageData.data[idx] = r
               imageData.data[idx + 1] = g
               imageData.data[idx + 2] = b
-              imageData.data[idx + 3] = 220
+              imageData.data[idx + 3] = 255
             }
           }
 
@@ -128,7 +178,7 @@ export default function CnxTif() {
           ]
 
           const rasterLayer = L.imageOverlay(canvas.toDataURL(), bounds, {
-            opacity: 1,
+            opacity: 0.7,
           })
           return { rasterLayer, image, width, height, bbox, min, max, label }
         } catch (err) {
@@ -164,17 +214,28 @@ export default function CnxTif() {
       // L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map)
       // ✅ Layer Control
       const baseLayers = {
+        "🌑 Dark Matter": darkBase,
         "🛰️ Google Satellite": googleSat,
         "🏔️ Google Terrain": googleTerrain,
       }
+
       const overlays = {
         "NN - Nearest Neighbor": nnData.rasterLayer,
         "IDW - Inverse Distance Weighted": idwData.rasterLayer,
       }
 
-      // ✅ สร้าง Layer Control
+      // ✅ แยก infra layers
+      const infraLayers = {
+        "River": pingRiver ?? L.layerGroup(),
+        "Road": roadLayer ?? L.layerGroup(),
+      }
+      
+
+      // ✅ เพิ่ม control 2 ชุด
       nnData.rasterLayer.addTo(map)
-      const layerControl = L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map)
+      L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map)
+      L.control.layers({}, infraLayers, { collapsed: false, position: "topright" }).addTo(map)
+
 
       // ✅ เพิ่มหัวข้อ Interpolation ด้านบน overlay
       setTimeout(() => {
