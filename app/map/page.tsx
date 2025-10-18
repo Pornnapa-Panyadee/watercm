@@ -43,7 +43,7 @@ export default function WaterDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  แผนที่ระดับน้ำท่วม
+                  แผนที่การประมาณค่าระดับน้ำเชิงพื้นที่
                 </CardTitle>
               </CardHeader>
               <CardContent>
